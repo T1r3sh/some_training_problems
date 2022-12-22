@@ -30,7 +30,7 @@ class Solution(object):
         if len(openstack) > 0:
             return False, '('
         return True, ''
-    
+
     # new is slightly faster
     def new_search_char(self, s: str, char: str) -> list[int]:
         """New version of search algo. 
@@ -46,13 +46,13 @@ class Solution(object):
         out = []
         for i in idx:
             out.append(i)
-            if len(out)>1 and out[-1]-out[-2] == 1:
+            if len(out) > 1 and out[-1]-out[-2] == 1:
                 out.pop(-1)
         return out
-    
+
     def search_char(self, s: str, char: str) -> list[int]:
         """ Searches for the first indices of char sequences in  string s
-    
+
         Args:
             s (str): input string
             char (str): string to search in s string
@@ -111,3 +111,39 @@ class Solution(object):
         string_with_minimum_changes = filter(
             lambda x: len(x) == max_len, correct_strings)
         return list(dict.fromkeys(string_with_minimum_changes))
+
+    def result_decomposition(self, strings: list[str], char: list[str]) -> list[str]:
+        """_summary_
+
+        Args:
+            strings (list[str]): list of strings to process with deletion function
+            char (list[str]): chars to delete. in this particular case, is parethese opening ether closing
+
+        Returns:
+            list[str]: strings that have same length. one level of traversing through possible solutions
+        """
+        processed_strings_wo_duplicates = []
+        for index, string in enumerate(strings):
+            all_options = self.all_deletion_options(string, char[index])
+            [processed_strings_wo_duplicates.append(processed_string)
+                for processed_string in all_options
+                if processed_string not in processed_strings_wo_duplicates]
+        return processed_strings_wo_duplicates
+
+    def removeInvalidParentheses_wide_search(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        # lets rethink it a little bit.
+        # We need to go through layers and if we find even 1 correct combination we close searching
+        temporal_string_list = [s]
+        while True:
+            valid_map, char_map = zip(*[self.is_valid(string_) for string_ in temporal_string_list])
+            if True in valid_map:
+                return list(compress(temporal_string_list, valid_map))
+            temporal_string_list = self.result_decomposition(temporal_string_list, char_map)
+
+# sol = Solution()     
+
+# sol.removeInvalidParentheses_wide_search('))()((')
