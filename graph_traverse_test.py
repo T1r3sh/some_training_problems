@@ -11,3 +11,6 @@ class testing(unittest.TestCase):
         self.assertEqual(self.solution.sumOfDistancesInTree(1, []), [0])
         self.assertEqual(self.solution.sumOfDistancesInTree(2, [[1, 0]]), [1, 1])
         
+if __name__ == '__main__':
+    unittest.main()
+        
